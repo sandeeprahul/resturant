@@ -6,10 +6,15 @@ import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant/employee_model.dart';
 import 'package:restaurant/pin_password_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp(cameras));
 }
 
