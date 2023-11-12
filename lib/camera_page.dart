@@ -122,7 +122,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse("http://employees.esolutionz.in/api"));
+      final response = await http.get(Uri.parse("https://employees.esolutionz.in/api"));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -172,7 +172,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
       DateTime now = DateTime.now();
       // Replace this URL with your API endpoint
-      const String apiUrl = "http://employees.esolutionz.in/api/submit";
+      const String apiUrl = "https://employees.esolutionz.in/api/submit";
 
       // You might need to adjust the headers based on your API requirements
       final Map<String, String> headers = {

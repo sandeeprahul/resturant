@@ -131,9 +131,9 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
         loading = true;
       });
 
-      // var url = Uri.parse("http://employees.esolutionz.in/api/employee/$value");
-      var url =
-      Uri.http('employees.esolutionz.in', '/api/employee/$value',);
+      var url = Uri.parse("https://employees.esolutionz.in/api/employee/$value");
+      // var url =
+      // Uri.http('employees.esolutionz.in', '/api/employee/$value',);
       // var response = await http.get(url);
       var response = await http.get(
         url,
@@ -191,7 +191,7 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse("http://employees.esolutionz.in/api"));
+      final response = await http.get(Uri.parse("https://employees.esolutionz.in/api"));
 
       if (response.statusCode == 200) {
         print("fetchData->$response");
