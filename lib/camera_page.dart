@@ -104,7 +104,7 @@ class _CameraScreenState extends State<CameraScreen> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
+     /* floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.camera_alt),
         onPressed: () async {
           try {
@@ -114,7 +114,7 @@ class _CameraScreenState extends State<CameraScreen> {
             print(e);
           }
         },
-      ),
+      ),*/
     );
   }
 
