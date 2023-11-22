@@ -8,6 +8,7 @@ import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant/AlertUtils.dart';
 import 'package:restaurant/employee_model.dart';
+import 'package:restaurant/pin_password_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -44,7 +45,6 @@ class _CameraScreenState extends State<CameraScreen> {
   final List<String> _tabTitles = ["Start", "Break", "Finish"];
   final int _counter = 0;
   int _currentIndex = 0;
-  int type = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,12 +99,40 @@ class _CameraScreenState extends State<CameraScreen> {
                           _tabTitles.length,
                               (index) => GestureDetector(
                             onTap: () async {
-                              setState(() {
-                                _currentIndex = index;
-                              });
-                              // _takePictureAndSendData(index,"1");
 
-                              checkTypeAndSendData(index);
+                              //start
+                              if(widget.employee.type=="0"){
+                                setState(() {
+                                  _currentIndex = index;
+                                });
+                                // _takePictureAndSendData(index,"1");
+
+                                checkTypeAndSendData(index,1);//start
+                              }
+                              //break
+                              else if(widget.employee.type=="1"){
+                                setState(() {
+                                  _currentIndex = index;
+                                });
+                                if(index==2){
+                                  checkTypeAndSendData(index,4);//break
+                                }
+                                else if(index==1){
+                                  checkTypeAndSendData(index,2); //finish
+
+                                }
+                              }
+                              else if(widget.employee.type=="2"){
+                                setState(() {
+                                  _currentIndex = index;
+                                });
+                                checkTypeAndSendData(index,3);//start
+                              }else if(widget.employee.type=="4"){
+
+                              }else{
+
+                              }
+
                             },
                             child:AnimatedContainer(
 
@@ -184,15 +212,15 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  Future<void> _takePictureAndSendData(int index) async {
+  Future<void> _takePictureAndSendData(int index,int typee) async {
     try {
       await _initializeControllerFuture;
       final XFile pictureFile = await _controller.takePicture();
 
       // type
+      await sendData(index,pictureFile,typee);
 
-      if(_tabTitles[index]=="Start"){
-        await sendData(index,pictureFile,1);
+   /*   if(_tabTitles[index]=="Start"){
         setState(() {
           type = 1;
         });
@@ -207,12 +235,13 @@ class _CameraScreenState extends State<CameraScreen> {
         setState(() {
           type = 3;
         });
-      }else if(type==3 && _tabTitles[index]=="Start"){
-        await sendData(index,pictureFile,3);
-        setState(() {
-          type = 0;
-        });
-      }
+      }*/
+      // else if(type==3 && _tabTitles[index]=="Start"){
+      //   await sendData(index,pictureFile,3);
+      //   setState(() {
+      //     type = 0;
+      //   });
+      // }
       // Now, you can send the file to the API
 
     } catch (e) {
@@ -266,19 +295,30 @@ class _CameraScreenState extends State<CameraScreen> {
 
       if (response.statusCode == 200) {
         print("File sent successfully");
+        print("${response.toString()}");
+        print("${response}");
         // AlertUtils.showAlert(context, 'Alert', 'Submit success');
-        Get.defaultDialog(
+     /*   Get.defaultDialog(
           title: 'Alert!',
           middleText: 'Success',
+        );*/
+        // Navigator.pop(context);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PinPasswordPage(widget.cameras)),
         );
-        Navigator.pop(context);
         // Handle the response if needed
       } else {
-        Get.defaultDialog(
+      /*  Get.defaultDialog(
           title: 'Alert',
           middleText: 'Error sending file. Status Code: ${response.statusCode}',
-        );
+        );*/
         print("Error sending file. Status Code: ${response.statusCode}");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PinPasswordPage(widget.cameras)),
+        );
         // Handle the error response if needed
       }
     } catch (e) {
@@ -292,57 +332,10 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
 
-  Future<void> sendData__(int index, XFile pictureFile) async {
-    try {
-      DateTime now = DateTime.now();
-      // Replace this URL with your API endpoint
-      const String apiUrl = "http://employees.esolutionz.in/api/submit";
 
-      // You might need to adjust the headers based on your API requirements
-      final Map<String, String> headers = {
-        "Content-Type": "application/json",
-      };
+  Future<void> checkTypeAndSendData(int index,int type) async {
 
-      // Convert the image to base64
-      List<int> pictureBytes = await pictureFile.readAsBytes();
-      String base64Image = base64Encode(pictureBytes);
-
-      // Create the request payload
-      var requestBody = {
-        'emp_id': widget.employee.id,
-        'emp_pin': widget.employee.empPin,
-        'type': '$index',
-        'time': '$now',
-        'file': base64Image,
-      };
-
-      // Send the request
-      var response = await http.post(
-        Uri.parse(apiUrl),
-        headers: headers,
-        body: jsonEncode(requestBody),
-      );
-
-      if (response.statusCode == 200) {
-        print("File sent successfully");
-        AlertUtils.showAlert(context, 'Alert', 'Submit success');
-        Navigator.pop(context);
-        // Handle the response if needed
-      } else {
-        AlertUtils.showAlert(context, 'Alert', 'Error sending file. Status Code: ${response.statusCode}');
-        print("Error sending file. Status Code: ${response.statusCode}");
-        // Handle the error response if needed
-      }
-    } catch (e) {
-      AlertUtils.showAlert(context, 'Alert', 'Error sending file: $e');
-      print("Error sending file: $e");
-      // Handle other errors if needed
-    }
-  }
-
-  Future<void> checkTypeAndSendData(int index) async {
-
-    _takePictureAndSendData(index);
+    _takePictureAndSendData(index,type);
   }
 
 
