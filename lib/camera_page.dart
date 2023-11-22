@@ -8,6 +8,7 @@ import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant/AlertUtils.dart';
 import 'package:restaurant/employee_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -27,6 +28,7 @@ class _CameraScreenState extends State<CameraScreen> {
   void initState() {
     super.initState();
     fetchData();
+    // checkType();
     _controller = CameraController(
       widget.cameras[0],
       ResolutionPreset.medium,
@@ -42,6 +44,7 @@ class _CameraScreenState extends State<CameraScreen> {
   final List<String> _tabTitles = ["Start", "Break", "Finish"];
   final int _counter = 0;
   int _currentIndex = 0;
+  int type = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,52 +55,82 @@ class _CameraScreenState extends State<CameraScreen> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Stack(
-              children: [
-                SizedBox(
-                    width:MediaQuery.of(context).size.width,child: CameraPreview(_controller)),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: const EdgeInsets.all(16), // Add margins here
-                    decoration:  BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20),
-                    ),            child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(
-                      _tabTitles.length,
-                          (index) => GestureDetector(
-                        onTap: () async {
-                          setState(() {
-                            _currentIndex = index;
-                          });
+            return Container(
+              padding: const EdgeInsets.all(24),
+              color: Colors.white,
+              child: Container(
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16
+                ),
+                  color: Colors.white,
 
-                          _takePictureAndSendData(index);
-                        },
-                        child:AnimatedContainer(
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                              width:MediaQuery.of(context).size.width,child: CameraPreview(_controller)),
 
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.all(16),
-                          margin: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: _currentIndex == index ? Colors.white : Colors.transparent,
-                          ),
-                          child: Text(
-                            _tabTitles[index],
-                            style: TextStyle(
-                              color: _currentIndex == index ? Colors.blue : Colors.white,
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 18),
+                                  child: Image.asset('assets/logosaniel.jpeg',height: 86,width: 86,),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 80,left: 16,right: 16), // Add margins here
+                        decoration:  BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20),
+                        ),            child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List.generate(
+                          _tabTitles.length,
+                              (index) => GestureDetector(
+                            onTap: () async {
+                              setState(() {
+                                _currentIndex = index;
+                              });
+                              // _takePictureAndSendData(index,"1");
+
+                              checkTypeAndSendData(index);
+                            },
+                            child:AnimatedContainer(
+
+                              duration: const Duration(milliseconds: 300),
+                              padding: const EdgeInsets.all(16),
+                              margin: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: _currentIndex == index ? Colors.white : Colors.transparent,
+                              ),
+                              child: Text(
+                                _tabTitles[index],
+                                style: TextStyle(
+                                  color: _currentIndex == index ? Colors.blue : Colors.white,
+                                ),
+                              ),
                             ),
                           ),
                         ),
+
+                      ),
                       ),
                     ),
-
-                  ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             );
           } else {
             return const Center(child: CircularProgressIndicator());
@@ -156,8 +189,31 @@ class _CameraScreenState extends State<CameraScreen> {
       await _initializeControllerFuture;
       final XFile pictureFile = await _controller.takePicture();
 
+      // type
+
+      if(_tabTitles[index]=="Start"){
+        await sendData(index,pictureFile,1);
+        setState(() {
+          type = 1;
+        });
+      }else if(_tabTitles[index]=="Break"){
+        await sendData(index,pictureFile,2);
+        setState(() {
+          type = 2;
+        });
+      }
+      else if(_tabTitles[index]=="Finish"){
+        await sendData(index,pictureFile,4);
+        setState(() {
+          type = 3;
+        });
+      }else if(type==3 && _tabTitles[index]=="Start"){
+        await sendData(index,pictureFile,3);
+        setState(() {
+          type = 0;
+        });
+      }
       // Now, you can send the file to the API
-      await sendData(index,pictureFile);
 
     } catch (e) {
       print(e);
@@ -166,9 +222,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
 
 
-  Future<void> sendData(int index, XFile pictureFile) async {
+  Future<void> sendData(int index, XFile pictureFile, int type) async {
     try {
-      int newIndex= index+1;
+
 
       DateTime now = DateTime.now();
       // Replace this URL with your API endpoint
@@ -186,7 +242,7 @@ class _CameraScreenState extends State<CameraScreen> {
       request.fields['emp_id'] = widget.employee.id; // replace with your parameters
       request.fields['emp_pin'] = widget.employee.empPin; // replace with your parameters
       // request.fields['type'] = "3"; // replace with your parameters
-      request.fields['type'] = "$newIndex"; // replace with your parameters
+      request.fields['type'] = "$type"; // replace with your parameters
       request.fields['time'] = "$now"; // replace with your parameters
 
       // Read the bytes of the image file
@@ -283,5 +339,11 @@ class _CameraScreenState extends State<CameraScreen> {
       // Handle other errors if needed
     }
   }
+
+  Future<void> checkTypeAndSendData(int index) async {
+
+    _takePictureAndSendData(index);
+  }
+
 
 }
