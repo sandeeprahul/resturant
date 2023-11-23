@@ -51,7 +51,7 @@ class _CameraScreenState extends State<CameraScreen> {
       appBar: AppBar(
         title: const Text('Camera'),
       ),
-      body: FutureBuilder(
+      body: loading?const CircularProgressIndicator():FutureBuilder(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -115,11 +115,10 @@ class _CameraScreenState extends State<CameraScreen> {
                                   _currentIndex = index;
                                 });
                                 if(index==2){
-                                  checkTypeAndSendData(index,4);//break
+                                  checkTypeAndSendData(index,4);//finish
                                 }
                                 else if(index==1){
-                                  checkTypeAndSendData(index,2); //finish
-
+                                  checkTypeAndSendData(index,2); //break
                                 }
                               }
                               else if(widget.employee.type=="2"){
@@ -127,9 +126,14 @@ class _CameraScreenState extends State<CameraScreen> {
                                   _currentIndex = index;
                                 });
                                 checkTypeAndSendData(index,3);//start
-                              }else if(widget.employee.type=="4"){
-
-                              }else{
+                              }else if(widget.employee.type=="3"){
+                                setState(() {
+                                  _currentIndex = index;
+                                });
+                                if(index==2){
+                                  checkTypeAndSendData(index,4);//finish
+                                }
+                              }else  if(widget.employee.type=="4"){
 
                               }
 
@@ -254,7 +258,9 @@ class _CameraScreenState extends State<CameraScreen> {
   Future<void> sendData(int index, XFile pictureFile, int type) async {
     try {
 
-
+      setState(() {
+        loading = true;
+      });
       DateTime now = DateTime.now();
       // Replace this URL with your API endpoint
       const String apiUrl = "https://employees.esolutionz.in/api/submit";
@@ -304,6 +310,9 @@ class _CameraScreenState extends State<CameraScreen> {
         );*/
         // Navigator.pop(context);
 
+        setState(() {
+          loading = false;
+        });
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => PinPasswordPage(widget.cameras)),
@@ -314,6 +323,9 @@ class _CameraScreenState extends State<CameraScreen> {
           title: 'Alert',
           middleText: 'Error sending file. Status Code: ${response.statusCode}',
         );*/
+        setState(() {
+          loading = false;
+        });
         print("Error sending file. Status Code: ${response.statusCode}");
         Navigator.pushReplacement(
           context,
@@ -322,6 +334,9 @@ class _CameraScreenState extends State<CameraScreen> {
         // Handle the error response if needed
       }
     } catch (e) {
+      setState(() {
+        loading = false;
+      });
       Get.defaultDialog(
         title: 'Alert',
         middleText:  'Error sending file: $e',
@@ -331,7 +346,7 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
-
+bool loading = false;
 
   Future<void> checkTypeAndSendData(int index,int type) async {
 
