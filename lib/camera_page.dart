@@ -42,7 +42,7 @@ class _CameraScreenState extends State<CameraScreen> {
     _controller.dispose();
     super.dispose();
   }
-  final List<String> _tabTitles = ["Start", "Break", "Finish"];
+  final List<String> _tabTitles = ["Start", "Break Start","Break End", "Finish"];
   final int _counter = 0;
   int _currentIndex = 0;
   @override
@@ -51,7 +51,7 @@ class _CameraScreenState extends State<CameraScreen> {
       appBar: AppBar(
         title: const Text('Camera'),
       ),
-      body: loading?const CircularProgressIndicator():FutureBuilder(
+      body: loading?const Center(child: CircularProgressIndicator()):FutureBuilder(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -102,36 +102,50 @@ class _CameraScreenState extends State<CameraScreen> {
 
                               //start
                               if(widget.employee.type=="0"){
-                                setState(() {
-                                  _currentIndex = index;
-                                });
+
                                 // _takePictureAndSendData(index,"1");
 
-                                checkTypeAndSendData(index,1);//start
+                                if(index==0){
+                                  checkTypeAndSendData(index,1);
+                                  setState(() {
+                                    _currentIndex = index;
+                                  });
+                                }
+                                //start
                               }
                               //break
                               else if(widget.employee.type=="1"){
-                                setState(() {
-                                  _currentIndex = index;
-                                });
-                                if(index==2){
-                                  checkTypeAndSendData(index,4);//finish
+
+
+                             /*   if(index==2){
+                                  checkTypeAndSendData(index,4);//
                                 }
-                                else if(index==1){
-                                  checkTypeAndSendData(index,2); //break
+                                else*/
+                                if(index==1){
+                                  checkTypeAndSendData(index,2); //break start
+                                  setState(() {
+                                    _currentIndex = index;
+                                  });
                                 }
                               }
                               else if(widget.employee.type=="2"){
-                                setState(() {
-                                  _currentIndex = index;
-                                });
-                                checkTypeAndSendData(index,3);//start
-                              }else if(widget.employee.type=="3"){
-                                setState(() {
-                                  _currentIndex = index;
-                                });
                                 if(index==2){
+                                  checkTypeAndSendData(index,3); //break finish
+                                  setState(() {
+                                    _currentIndex = index;
+                                  });
+                                }
+                                // setState(() {
+                                //   _currentIndex = index;
+                                // });
+                                // checkTypeAndSendData(index,3);//start
+                              }else if(widget.employee.type=="3"){
+
+                                if(index==3){
                                   checkTypeAndSendData(index,4);//finish
+                                  setState(() {
+                                    _currentIndex = index;
+                                  });
                                 }
                               }else  if(widget.employee.type=="4"){
 
