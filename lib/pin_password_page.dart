@@ -50,7 +50,7 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Employee Login'),
+        title: const Text('Staff Login'),
       ),
       body:loading?const Column(
         // mainAxisSize: MainAxisSize.min,
@@ -69,7 +69,7 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
             Text(
               enteredNumber==""?  "Enter Pin ":enteredNumber,
 
-              style: const TextStyle(fontSize: 24,),
+              style: const TextStyle(fontSize: 28,),
             ),
             const SizedBox(height: 20),
             Row(
@@ -107,7 +107,13 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
                 IconButton(
                   icon: const Icon(Icons.check_circle,color: Colors.green,),
                   onPressed: (){
-                    loginUser(enteredNumber);
+                    if(enteredNumber.length==4){
+                      loginUser(enteredNumber);
+                    }
+                    else{
+                      AlertUtils.showAlert(context, 'Alert', 'Incorrect PIN');
+
+                    }
                   },
                 ),
 
@@ -161,7 +167,7 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
           responseMessage = 'Error: ${response.statusCode}';
         });
 
-        AlertUtils.showAlert(context, 'Alert', 'Error: ${response.statusCode}');
+        AlertUtils.showAlert(context, 'Alert', 'Error: Incorrect PIN');
 
         return null;
       }
@@ -177,7 +183,8 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
       return null;
     } catch (e) {
       print("Error: $e");
-      AlertUtils.showAlert(context, 'Alert', 'Error: $e');
+      // AlertUtils.showAlert(context, 'Alert', 'Error: $e');
+      AlertUtils.showAlert(context, 'Alert', 'Error: Incorrect PIN');
 
       setState(() {
         loading = false;
@@ -241,8 +248,16 @@ class NumberButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
+        style: ButtonStyle(
+          // Set height and width using fixed dimensions or SizedBox
+          minimumSize: MaterialStateProperty.all<Size>(
+            Size(150, 100), // Replace with desired height and width
+          ),
+          // Other button style properties can be added here as needed
+          // For example: backgroundColor, padding, textStyle, etc.
+        ),
         onPressed: () => onPressed(number),
-        child: Text(number),
+        child: Text(number,style: const TextStyle(fontSize: 18),),
       ),
     );
   }
