@@ -8,6 +8,8 @@ import 'package:restaurant/employee_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant/main.dart';
 
+import 'constants.dart';
+
 
 
 
@@ -100,12 +102,15 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.backspace),
+                  icon: const Icon(Icons.backspace,size: 34,),
                   onPressed: _clearNumber,
                 ),
+                SizedBox(width: 75,),
                 NumberButton('0', _onNumberPressed),
+                SizedBox(width: 75,),
+
                 IconButton(
-                  icon: const Icon(Icons.check_circle,color: Colors.green,),
+                  icon: const Icon(Icons.check_circle,color: Colors.green,size: 34,),
                   onPressed: (){
                     if(enteredNumber.length==4){
                       loginUser(enteredNumber);
@@ -137,9 +142,9 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
         loading = true;
       });
 
-      var url = Uri.parse("https://employees.esolutionz.in/api/employee/$value");
+      var url = Uri.parse("${Constants.apiHttpsUrl}/employee/$value");
       // var url =
-      // Uri.http('employees.esolutionz.in', '/api/employee/$value',);
+ 
       // var response = await http.get(url);
       var response = await http.get(
         url,
@@ -198,7 +203,7 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse("https://employees.esolutionz.in/api"));
+      final response = await http.get(Uri.parse(Constants.apiHttpsUrl));
 
       if (response.statusCode == 200) {
         print("fetchData->$response");

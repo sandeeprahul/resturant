@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant/AlertUtils.dart';
+import 'package:restaurant/constants.dart';
 import 'package:restaurant/employee_model.dart';
 import 'package:restaurant/pin_password_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+//http://employees.sanielsoft.com/api
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
   final Employee employee;
@@ -151,6 +152,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
                               }
 
+
                             },
                             child:AnimatedContainer(
 
@@ -159,12 +161,14 @@ class _CameraScreenState extends State<CameraScreen> {
                               margin: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: _currentIndex == index ? Colors.white : Colors.transparent,
+                                color: int.parse(widget.employee.type) == index ? Colors.white : Colors.transparent,
+                                // color: _currentIndex == index ? Colors.white : Colors.transparent,
                               ),
                               child: Text(
                                 _tabTitles[index],
                                 style: TextStyle(
-                                  color: _currentIndex == index ? Colors.blue : Colors.white,
+                                  color:  int.parse(widget.employee.type)  == index ? Colors.blue : Colors.white,
+                                  // color: _currentIndex == index ? Colors.blue : Colors.white,
                                 ),
                               ),
                             ),
@@ -201,7 +205,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse("https://employees.esolutionz.in/api"));
+      final response = await http.get(Uri.parse(Constants.apiHttpsUrl));
 
       if (response.statusCode == 200) {
         // Successful response
@@ -277,7 +281,7 @@ class _CameraScreenState extends State<CameraScreen> {
       });
       DateTime now = DateTime.now();
       // Replace this URL with your API endpoint
-      const String apiUrl = "https://employees.esolutionz.in/api/submit";
+      const String apiUrl = "${Constants.apiHttpsUrl}/submit";
 
       // You might need to adjust the headers based on your API requirements
       final Map<String, String> headers = {
