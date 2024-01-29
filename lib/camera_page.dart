@@ -50,7 +50,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Camera'),
+        title:  Text('Welcome ${widget.employee.name}'),
       ),
       body: loading?const Center(child: CircularProgressIndicator()):FutureBuilder(
         future: _initializeControllerFuture,
