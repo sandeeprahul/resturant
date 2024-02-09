@@ -14,6 +14,7 @@ class Employee {
   final String status;
   final String createdAt;
   final String updatedAt;
+  final String type;
 
   Employee({
     required this.id,
@@ -31,12 +32,13 @@ class Employee {
     required this.status,
     required this.createdAt,
     required this.updatedAt,
+    required this.type,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) {
     return Employee(
       id: json['id'] ?? '',
-      name: json['name'] ?? '',
+      name: json['fname'] ?? '',
       designation: json['designation'] ?? '',
       empPin: json['emp_pin'] ?? '',
       email: json['email'] ?? '',
@@ -50,6 +52,7 @@ class Employee {
       status: json['status'] ?? '',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
+      type: json['type'] ?? "",
     );
   }
 }

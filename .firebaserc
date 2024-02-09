@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "restaurant-2b3d6"
-  }
+  },
+  "targets": {
+    "restaurant-2b3d6": {
+      "hosting": {
+        "restaurantTarget": [
+          "restaurant-2b3d6"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
