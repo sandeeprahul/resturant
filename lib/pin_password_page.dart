@@ -137,7 +137,6 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
       // var response = await http.get(url);
       var response = await http.get(
         url,
-
       );
       if (response.statusCode == 200) {
         setState(() {
@@ -158,10 +157,10 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
         setState(() {
           loading = false;
           enteredNumber = "";
-          responseMessage = 'Error: ${response.statusCode}';
+          responseMessage = 'Error: User Not found \n${response.statusCode}';
         });
 
-        AlertUtils.showAlert(context, 'Alert', 'Error: ${response.statusCode}');
+        AlertUtils.showAlert(context, 'Alert', "Error: User Not found \n${response.statusCode}");
 
         return null;
       }
