@@ -8,6 +8,8 @@ import 'package:restaurant/employee_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant/main.dart';
 
+import 'constants.dart';
+
 
 
 
@@ -131,12 +133,12 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
         loading = true;
       });
 
-      // var url = Uri.parse("http://employees.esolutionz.in/api/employee/$value");
-      var url =
-      Uri.http('employees.esolutionz.in', '/api/employee/$value',);
+       String apiUrl = "${Constants.apiHttpsUrl}/employee/$value";
+
+
       // var response = await http.get(url);
       var response = await http.get(
-        url,
+        Uri.parse(apiUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -193,7 +195,7 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse("http://employees.esolutionz.in/api"));
+      final response = await http.get(Uri.parse("${Constants.apiHttpsUrl}"));
 
       if (response.statusCode == 200) {
         print("fetchData->$response");
