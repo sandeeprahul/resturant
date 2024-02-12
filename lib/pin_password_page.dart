@@ -133,16 +133,17 @@ class _PinPasswordPageState extends State<PinPasswordPage> {
         loading = true;
       });
 
-       String apiUrl = "${Constants.apiHttpsUrl}/employee/$value";
+       // String apiUrl = "${Constants.apiHttpsUrl}/employee/$value";
+      final response = await http.get(Uri.parse("${Constants.apiHttpsUrl}/employee/$value"));
 
 
       // var response = await http.get(url);
-      var response = await http.get(
+    /*  var response = await http.get(
         Uri.parse(apiUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-      );
+      );*/
       if (response.statusCode == 200) {
         setState(() {
           loading = false;
