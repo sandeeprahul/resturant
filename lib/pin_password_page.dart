@@ -247,7 +247,7 @@ class NumberButton extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: () => onPressed(number),
-        child: Text(number),
+        child: SizedBox(width:78,height: 78,child: Center(child: Text(number))),
       ),
     );
   }
